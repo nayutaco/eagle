@@ -1,4 +1,5 @@
-# esp8266_bitcoin
+esp8266
+====
 
 ### ESP8266 + Non-OS SDK 1.5.2
 * WROOM-02
@@ -18,6 +19,14 @@
 	* デバッグログ
 
 
+### OSS
+* Bloom Filter
+	[picocoin : jgarzik@github](https://github.com/jgarzik/picocoin)
+
+* NTP
+	[Simple NTP : raburton@github](https://github.com/raburton/esp8266/tree/master/ntp)
+
+
 ### FLASH
 
 |sector |size |description |
@@ -30,70 +39,6 @@
 |0x3F9 | 3 | 空き |
 |0x3FB | 1 | Bitcoinアドレス、公開鍵 |
 
-
-### ビルド
-
-[Nayuta GoogleDrive://EAGLE/hirokuma/work/WROOM-02/開発環境](https://drive.google.com/open?id=0B33sikPWkTjQZnNMS1NtQ1ducUE)参照
-
-* コンパイル環境(VirtualBox)
-	1. [ここを参考](http://bbs.espressif.com/viewtopic.php?f=57&t=2)にVirtualBoxの仮想環境取得
-		* [GoogleDrive : ESP8266_lubuntu.ova](https://drive.google.com/open?id=0B33sikPWkTjQUHJSREd5T2IyRDg)
-	2. 同じサイトにコンパイラのアップデート版があるため、それも取得
-		* GoogleDrive版は更新済み
-	3. [Getting Started Guide](http://bbs.espressif.com/download/file.php?id=1074)を参考に環境を作る
-
-* SDK(Getting Started Guideの説明と重複する)
-	1. [ESP8266_NONOS_SDK_V1.5.2_16_01_29.zip](http://bbs.espressif.com/download/file.php?id=1079)をダウンロード
-		* [GoogleDrive : ESP8266_NONOS_SDK_V1.5.2_16_01_29_eagleplug.zip](https://drive.google.com/open?id=0B33sikPWkTjQVjdkYjgwanR1MkE)
-	2. ローカル環境に展開する
-	3. VirtualBoxで共有フォルダとして見えるように設定する
-	4. esp8266_kumacoincをesp_iot_sdk_v1.5.2の直下に展開する(esp_iot_sdk_v1.5.2/esp8266_kumacoinc/README.md、という位置)
-		* git : https://bitbucket.org/nayuta_co/eagle_wifi
-			* 使うのは、esp8266_kumacoincのみ
-
-* ソース変更
-	* include/user_config.h
-		* user_config_sample.hをリネーム
-		* 自分のWiFi APに合わせて、MY_SSIDとMY_PASSWDを変更する
-	* user/user_main.c
-		* MY_HOST, MY_HOST1～4を PEERのIPアドレスに変更する
-			* 今のところ、固定IPのため、MY_HOSTは使っていない
-		* PORTを、使用するポート番号に変更する
-			* 18333はTestNet3
-
-* ビルド
-	1. VirtualBox上で、コンソールからesp_iot_sdk_v1.5.2/esp8266_kumacoincに移動
-	2. 以下のコマンドを打つ
-		> ./gen_misc.sh
-
-	3. "!!!"の出力まで出れば、だいたいうまく行っている
-		* 消したいときは「make clobber」
-
-* 焼く(Windows)
-	1. [FLASH Download Tool](http://bbs.espressif.com/viewtopic.php?f=57&t=433)を取得
-		* [GoogleDrive : FLASH_DOWNLOAD_TOOLS_v2.4_150924.zip](https://drive.google.com/open?id=0B33sikPWkTjQMHZ6RUYwMjAwU2s)
-		* [User Manual](http://bbs.espressif.com/viewtopic.php?f=51&t=1376)
-
-	2. ローカル環境の「esp_iot_sdk_v1.5.2\bin\upgrade\user1.4096.new.6.bin」が焼くバイナリファイル
-	3. [画像](https://drive.google.com/open?id=0B33sikPWkTjQU01HaExmcTV6bUk)を参考に設定する
-		* タイトルが「V2.3」となっているが、間違いらしい
-		* 生成したファイル以外も、sp_iot_sdk_v1.5.2\binの中に入っている
-			* 0x000000 : sp_iot_sdk_v1.5.2\bin\boot_v1.5.bin
-			* 0x001000 : sp_iot_sdk_v1.5.2\bin\upgrade\user1.4096.new.6.bin
-			* 0x3fc000 : sp_iot_sdk_v1.5.2\bin\esp_init_data_default.bin
-			* 0x0fe000 : sp_iot_sdk_v1.5.2\bin\blank.bin
-			* 0x3fe000 : sp_iot_sdk_v1.5.2\bin\blank.bin
-		* 5ファイルとも焼くのは初回だけで、あとは2番目の「user1.4096.new.6.bin」だけでよい
-	4. [画像](https://drive.google.com/open?id=0B33sikPWkTjQNFNXZl9Qd1ZnNVE)を参考に、PCとUARTを接続する
-		* DOWNLOAD TOOLSのCOMポート番号は20までしか対応してないので、その数字になるようにPC側を設定すること
-	5. SW2(橙色)を押したまま、Eagle Plugの電源を入れる
-	6. 左下の「START」を押す
-		* うまく行くと、「Download」になってプログレスバーが進む
-		* UARTの通信がうまく行かないと、失敗する
-			* SW2をちゃんと押せていない場合も
-		* 初めて焼くとき、「MAC Address」のメモを残しておくこと！
-			* 通常は問題ないが、ここでしかMACアドレスを確認できないため
-	7. 表示が「FINISH」になったら、Eagle Plugの電源を切り、UARTボードも外す
 
 ### 実行
 	* 電源を入れると、通電LEDが0.5秒間隔で点滅する
@@ -142,13 +87,6 @@
 		* GETDATA_NUM
 		* 送信バッファサイズ内でパケットを作っているため、制限が発生する
 			* 分割送信にすることも可能と思われるが、ESP8266の送信完了コールバックを待つなど複雑になりそう
-
-### OSS
-* Bloom Filter
-	[picocoin : jgarzik@github](https://github.com/jgarzik/picocoin)
-
-* NTP
-	[Simple NTP : raburton@github](https://github.com/raburton/esp8266/tree/master/ntp)
 
 
 ### WROOM-02のバッファ情報
